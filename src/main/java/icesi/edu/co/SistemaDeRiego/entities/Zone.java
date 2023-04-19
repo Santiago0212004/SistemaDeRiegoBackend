@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "zones")
+@Table(name = "zone")
 public class Zone {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,10 +18,10 @@ public class Zone {
 
     private String description;
 
-    @ManyToMany
-    List<User> users;
+    @OneToMany(mappedBy = "zone")
+    private List<UserZone> userZones;
 
-    @OneToMany(mappedBy = "zones")
+    @OneToMany(mappedBy = "zone")
     @JsonIgnore
     private List<Plant> plants;
 
@@ -50,12 +50,12 @@ public class Zone {
         this.description = description;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<UserZone> getUserZones() {
+        return userZones;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUserZones(List<UserZone> userZones) {
+        this.userZones = userZones;
     }
 
     public List<Plant> getPlants() {

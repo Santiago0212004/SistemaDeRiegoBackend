@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "actuators")
+@Table(name = "actuator")
 public class Actuator {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

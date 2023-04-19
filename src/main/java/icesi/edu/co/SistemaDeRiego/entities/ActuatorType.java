@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "actuator_types")
+@Table(name = "actuator_type")
 public class ActuatorType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +16,7 @@ public class ActuatorType {
     @Basic(optional = false)
     private String model;
 
-    @OneToMany(mappedBy = "actuator_types")
+    @OneToMany(mappedBy = "actuatorType")
     @JsonIgnore
     private List<Actuator> actuators;
 

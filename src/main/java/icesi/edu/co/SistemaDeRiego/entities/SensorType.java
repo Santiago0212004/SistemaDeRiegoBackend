@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "sensor_types")
+@Table(name = "sensor_type")
 public class SensorType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +19,7 @@ public class SensorType {
     @Basic(optional = false)
     private String unit;
 
-    @OneToMany(mappedBy = "sensor_types")
+    @OneToMany(mappedBy = "sensorType")
     @JsonIgnore
     private List<Sensor> sensors;
 
