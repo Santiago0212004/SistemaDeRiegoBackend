@@ -43,26 +43,21 @@ public class EchoController {
     @Autowired
     ZoneRepository zoneRepository;
 
-    @Autowired
-    UserZoneRepository userZoneRepository;
-
     @GetMapping("echo")
     public String echo(){
         User user = new User();
         user.setUsername("Example Username");
         user.setEmail("example@example.com");
         user.setPassword("example password");
-        userRepository.save(user);
 
         Zone zone = new Zone();
         zone.setName("Example Zone");
         zone.setDescription("Example Description");
-        zoneRepository.save(zone);
 
-        UserZone userZone = new UserZone();
-        userZone.setUser(user);
-        userZone.setZone(zone);
-        userZoneRepository.save(userZone);
+        user.getZones().add(zone);
+
+        zoneRepository.save(zone);
+        userRepository.save(user);
 
         Plant plant = new Plant();
         plant.setName("Example Plant");
@@ -109,6 +104,10 @@ public class EchoController {
 
         return "echo";
     }
+
+
+
+
 
     @PostMapping("another")
     public ResponseEntity<?> another(){

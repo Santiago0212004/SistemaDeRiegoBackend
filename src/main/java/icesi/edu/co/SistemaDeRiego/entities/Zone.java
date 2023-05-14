@@ -3,6 +3,7 @@ package icesi.edu.co.SistemaDeRiego.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,8 @@ public class Zone {
 
     private String description;
 
-    @OneToMany(mappedBy = "zone")
-    private List<UserZone> userZones;
+    @ManyToMany
+    private List<User> users;
 
     @OneToMany(mappedBy = "zone")
     @JsonIgnore
@@ -50,12 +51,12 @@ public class Zone {
         this.description = description;
     }
 
-    public List<UserZone> getUserZones() {
-        return userZones;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUserZones(List<UserZone> userZones) {
-        this.userZones = userZones;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public List<Plant> getPlants() {

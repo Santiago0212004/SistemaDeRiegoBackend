@@ -1,8 +1,8 @@
 package icesi.edu.co.SistemaDeRiego.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,9 +23,25 @@ public class User {
     @Basic(optional = false)
     private String username;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<UserZone> userZones;
+
+    @ManyToOne
+    @JoinColumn(name = "authorization", nullable = false)
+    private Authorization authorization;
+
+
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_zone",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "zone_id")
+    )
+    private List<Zone> zones;
+
+    public User(){
+        this.zones = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
@@ -59,11 +75,19 @@ public class User {
         this.username = username;
     }
 
-    public List<UserZone> getUserZones() {
-        return userZones;
+    public List<Zone> getZones() {
+        return zones;
     }
 
-    public void setUserZones(List<UserZone> userZones) {
-        this.userZones = userZones;
+    public void setZones(List<Zone> zones) {
+        this.zones = zones;
+    }
+
+    public Authorization getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(Authorization authorization) {
+        this.authorization = authorization;
     }
 }
