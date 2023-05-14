@@ -31,7 +31,7 @@ public class UserController {
 
         if(oAuthInRepository.isPresent()){
             Authorization authInRepository = oAuthInRepository.get();
-            if(authInRepository.getType().equals("USER")){
+            if(authInRepository.getType().equals("USER") || authInRepository.getType().equals("MASTER")){
 
                 boolean existsByUsername = userRepository.existsByUsername(user.getUsername());
                 boolean existsByEmail = userRepository.existsByEmail(user.getEmail());
@@ -60,24 +60,11 @@ public class UserController {
 
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {
-                return ResponseEntity.status(200).body(user.getAuthorization().getValue());
+                return ResponseEntity.status(200).body(user.getAuthorization());
             }
             return ResponseEntity.status(401).body("Invalid email or password.");
         }
 
         return ResponseEntity.status(401).body("Invalid email or password.");
-    }
-
-    @PostMapping(value = "users/loginMaster")
-    public ResponseEntity<?> loginMaster(@RequestParam String auth) {
-        Optional<Authorization> oAuthInRepository = authorizationRepository.findById(auth);
-        if(oAuthInRepository.isPresent()){
-            Authorization authInRepository = oAuthInRepository.get();
-            if(authInRepository.getType().equals("MASTER")){
-                return ResponseEntity.status(200).body("Authorized");
-            }
-            return ResponseEntity.status(400).body("Not authorized.");
-        }
-        return ResponseEntity.status(400).body("Not authorized.");
     }
 }
