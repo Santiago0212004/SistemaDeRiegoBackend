@@ -53,4 +53,6 @@ public class Measure {
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
     }
+
+
 }
