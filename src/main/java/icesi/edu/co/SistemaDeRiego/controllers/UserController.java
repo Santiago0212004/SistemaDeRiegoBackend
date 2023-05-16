@@ -60,7 +60,7 @@ public class UserController {
 
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {
-                return ResponseEntity.status(200).body(user.getAuthorization());
+                return ResponseEntity.status(200).body(user);
             }
             return ResponseEntity.status(401).body("Invalid email or password.");
         }
