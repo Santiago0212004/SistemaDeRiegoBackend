@@ -34,9 +34,9 @@ public class UserController {
             if(authInRepository.getType().equals("USER") || authInRepository.getType().equals("MASTER")){
 
                 boolean existsByUsername = userRepository.existsByUsername(user.getUsername());
-                boolean existsByEmail = userRepository.existsByEmail(user.getEmail());
+                boolean existsByIdentification = userRepository.existsByIdentification(user.getIdentification());
 
-                if (existsByUsername || existsByEmail) {
+                if (existsByUsername || existsByIdentification) {
                     return ResponseEntity.status(400).body("Username or email already exists.");
                 }
 
@@ -53,10 +53,10 @@ public class UserController {
 
     @PostMapping(value = "users/login", consumes = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
+        String identification = loginRequest.getIdentification();
         String password = loginRequest.getPassword();
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByIdentification(identification);
 
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {

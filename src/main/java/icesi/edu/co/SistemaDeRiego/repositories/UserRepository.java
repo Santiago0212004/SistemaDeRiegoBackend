@@ -9,10 +9,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.username = :username")
     boolean existsByUsername(@Param("username") String username);
 
-    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.email = :email")
-    boolean existsByEmail(@Param("email") String email);
+    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.identification = :identification")
+    boolean existsByIdentification(@Param("identification") String identification);
 
-    @Query("SELECT u FROM User u WHERE u.email = :email")
-    User findByEmail(@Param("email") String email);
+    @Query("SELECT u FROM User u WHERE u.identification = :identification")
+    User findByIdentification(@Param("identification") String identification);
 
 }

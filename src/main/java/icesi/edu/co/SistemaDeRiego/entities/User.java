@@ -10,15 +10,12 @@ import java.util.List;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
-    private Long id;
+    private String identification;
 
     @Basic(optional = false)
     private String password;
 
-    @Basic(optional = false)
-    private String email;
 
     @Basic(optional = false)
     private String username;
@@ -27,8 +24,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "authorization", nullable = false)
     private Authorization authorization;
-
-
 
 
     @ManyToMany
@@ -43,12 +38,12 @@ public class User {
         this.zones = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
+    public String getIdentification() {
+        return identification;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdentification(String id) {
+        this.identification = id;
     }
 
     public String getPassword() {
@@ -57,14 +52,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {

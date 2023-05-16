@@ -1,15 +1,15 @@
 package icesi.edu.co.SistemaDeRiego.auxiliar;
 
 public class LoginRequest {
-    private String email;
+    private String identification;
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getIdentification() {
+        return identification;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setIdentification(String email) {
+        this.identification = email;
     }
 
     public String getPassword() {
