@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 public class UserController {
 
     @Autowired
