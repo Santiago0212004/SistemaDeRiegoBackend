@@ -1,4 +1,4 @@
-package icesi.edu.co.SistemaDeRiego.auxiliar;
+package icesi.edu.co.SistemaDeRiego.requests;
 
 public class LoginRequest {
     private String identification;

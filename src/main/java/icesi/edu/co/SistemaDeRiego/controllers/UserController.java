@@ -1,6 +1,6 @@
 package icesi.edu.co.SistemaDeRiego.controllers;
 
-import icesi.edu.co.SistemaDeRiego.auxiliar.LoginRequest;
+import icesi.edu.co.SistemaDeRiego.requests.LoginRequest;
 import icesi.edu.co.SistemaDeRiego.entities.Authorization;
 import icesi.edu.co.SistemaDeRiego.entities.User;
 import icesi.edu.co.SistemaDeRiego.repositories.AuthorizationRepository;
@@ -37,7 +37,7 @@ public class UserController {
                 boolean existsByIdentification = userRepository.existsByIdentification(user.getIdentification());
 
                 if (existsByUsername || existsByIdentification) {
-                    return ResponseEntity.status(400).body("Username or email already exists.");
+                    return ResponseEntity.status(400).body("Username or identification already exists.");
                 }
 
                 String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -56,15 +56,16 @@ public class UserController {
         String identification = loginRequest.getIdentification();
         String password = loginRequest.getPassword();
 
-        User user = userRepository.findByIdentification(identification);
+        Optional<User> oUser = userRepository.findById(identification);
 
-        if (user != null) {
+        if (oUser.isPresent()) {
+            User user = oUser.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
                 return ResponseEntity.status(200).body(user);
             }
-            return ResponseEntity.status(401).body("Invalid email or password.");
+            return ResponseEntity.status(401).body("Invalid identification or password.");
         }
 
-        return ResponseEntity.status(401).body("Invalid email or password.");
+        return ResponseEntity.status(401).body("Invalid identification or password.");
     }
 }
