@@ -1,5 +1,6 @@
 package icesi.edu.co.SistemaDeRiego.controllers;
 
+import icesi.edu.co.SistemaDeRiego.requests.DeleteUserRequest;
 import icesi.edu.co.SistemaDeRiego.requests.LoginRequest;
 import icesi.edu.co.SistemaDeRiego.entities.Authorization;
 import icesi.edu.co.SistemaDeRiego.entities.User;
@@ -60,13 +61,36 @@ public class UserController {
         Optional<User> oUser = userRepository.findById(identification);
 
         if (oUser.isPresent()) {
-            User user = oUser.get();
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return ResponseEntity.status(200).body(user);
+            User foundUser = oUser.get();
+            if (passwordEncoder.matches(password, foundUser.getPassword())) {
+                return ResponseEntity.status(200).body(foundUser);
             }
             return ResponseEntity.status(401).body("Invalid identification or password.");
         }
 
         return ResponseEntity.status(401).body("Invalid identification or password.");
+    }
+
+    @PostMapping(value = "users/delete", consumes = "application/json")
+    public ResponseEntity<?> delete(@RequestBody DeleteUserRequest deleteUserRequest) {
+        Optional<User> oMaster = userRepository.findById(deleteUserRequest.getMaster().getIdentification());
+        Optional<User> oDeletingUser = userRepository.findById(deleteUserRequest.getMaster().getIdentification());
+
+        if (oMaster.isPresent()) {
+            User master = oMaster.get();
+            if(master.getAuthorization().equals("MASTER")){
+                if(oDeletingUser.isPresent()){
+                    User deletingUser = oDeletingUser.get();
+                    if(deletingUser.getAuthorization().equals("USER")){
+                        userRepository.deleteById(deletingUser.getIdentification());
+                        return ResponseEntity.status(200).body("User successfully deleted.");
+                    }
+                    return ResponseEntity.status(401).body("Master user cannot be deleted.");
+                }
+                return ResponseEntity.status(401).body("Deleting user doesn't exist");
+            }
+            return ResponseEntity.status(401).body("Not authorized");
+        }
+        return ResponseEntity.status(401).body("Not authorized");
     }
 }

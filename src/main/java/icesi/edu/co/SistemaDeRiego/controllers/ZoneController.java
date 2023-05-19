@@ -26,7 +26,7 @@ public class ZoneController {
 
     @PostMapping(value = "zones/add", consumes = "application/json")
     public ResponseEntity<?> addZone(@RequestBody AddZoneRequest addZoneRequest) {
-        User user = addZoneRequest.getUser();
+        User user = addZoneRequest.getMaster();
         Zone zone = addZoneRequest.getZone();
 
         Optional<User> oUser = userRepository.findById(user.getIdentification());

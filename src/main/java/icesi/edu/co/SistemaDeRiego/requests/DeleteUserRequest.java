@@ -1,11 +1,10 @@
 package icesi.edu.co.SistemaDeRiego.requests;
 
 import icesi.edu.co.SistemaDeRiego.entities.User;
-import icesi.edu.co.SistemaDeRiego.entities.Zone;
 
-public class AddZoneRequest {
+public class DeleteUserRequest {
     private User master;
-    private Zone zone;
+    private User deletingUser;
 
     public User getMaster() {
         return master;
@@ -15,11 +14,11 @@ public class AddZoneRequest {
         this.master = master;
     }
 
-    public Zone getZone() {
-        return zone;
+    public User getDeletingUser() {
+        return deletingUser;
     }
 
-    public void setZone(Zone zone) {
-        this.zone = zone;
+    public void setDeletingUser(User deletingUser) {
+        this.deletingUser = deletingUser;
     }
 }
