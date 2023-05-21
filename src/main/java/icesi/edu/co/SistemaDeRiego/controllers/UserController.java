@@ -1,7 +1,6 @@
 package icesi.edu.co.SistemaDeRiego.controllers;
 
-import icesi.edu.co.SistemaDeRiego.requests.DeleteUserRequest;
-import icesi.edu.co.SistemaDeRiego.requests.LoginRequest;
+import icesi.edu.co.SistemaDeRiego.requests.UserRequest;
 import icesi.edu.co.SistemaDeRiego.entities.Authorization;
 import icesi.edu.co.SistemaDeRiego.entities.User;
 import icesi.edu.co.SistemaDeRiego.repositories.AuthorizationRepository;
@@ -59,16 +58,19 @@ public class UserController {
     }
 
     @PostMapping(value = "users/login", consumes = "application/json")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String identification = loginRequest.getIdentification();
-        String password = loginRequest.getPassword();
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
+        String identification = loginUser.getIdentification();
+        String password = loginUser.getPassword();
 
         Optional<User> oUser = userRepository.findById(identification);
 
         if (oUser.isPresent()) {
             User foundUser = oUser.get();
             if (passwordEncoder.matches(password, foundUser.getPassword())) {
-                return ResponseEntity.status(200).body(foundUser);
+                if(foundUser.getAuthorization() != null){
+                    return ResponseEntity.status(200).body(foundUser);
+                }
+                return ResponseEntity.status(401).body("Your access key expired");
             }
             return ResponseEntity.status(401).body("Invalid identification or password.");
         }
@@ -77,9 +79,9 @@ public class UserController {
     }
 
     @PostMapping(value = "users/delete", consumes = "application/json")
-    public ResponseEntity<?> delete(@RequestBody DeleteUserRequest deleteUserRequest) {
-        Optional<User> oMaster = userRepository.findById(deleteUserRequest.getMaster().getIdentification());
-        Optional<User> oDeletingUser = userRepository.findById(deleteUserRequest.getMaster().getIdentification());
+    public ResponseEntity<?> delete(@RequestBody UserRequest userRequest) {
+        Optional<User> oMaster = userRepository.findById(userRequest.getMaster().getIdentification());
+        Optional<User> oDeletingUser = userRepository.findById(userRequest.getUser().getIdentification());
 
         if (oMaster.isPresent()) {
             User master = oMaster.get();

@@ -19,7 +19,7 @@ public class Zone {
 
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<User> users;
 
     @OneToMany(mappedBy = "zone")

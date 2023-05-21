@@ -26,7 +26,7 @@ public class User {
     private Authorization authorization;
 
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_zone",
             joinColumns = @JoinColumn(name = "user_id"),

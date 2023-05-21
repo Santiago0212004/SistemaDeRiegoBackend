@@ -2,9 +2,9 @@ package icesi.edu.co.SistemaDeRiego.requests;
 
 import icesi.edu.co.SistemaDeRiego.entities.User;
 
-public class DeleteUserRequest {
+public class UserRequest {
     private User master;
-    private User deletingUser;
+    private User user;
 
     public User getMaster() {
         return master;
@@ -14,11 +14,11 @@ public class DeleteUserRequest {
         this.master = master;
     }
 
-    public User getDeletingUser() {
-        return deletingUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setDeletingUser(User deletingUser) {
-        this.deletingUser = deletingUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

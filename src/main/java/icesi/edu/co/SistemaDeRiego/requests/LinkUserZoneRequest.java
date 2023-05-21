@@ -3,8 +3,9 @@ package icesi.edu.co.SistemaDeRiego.requests;
 import icesi.edu.co.SistemaDeRiego.entities.User;
 import icesi.edu.co.SistemaDeRiego.entities.Zone;
 
-public class AddZoneRequest {
+public class LinkUserZoneRequest {
     private User master;
+    private User user;
     private Zone zone;
 
     public User getMaster() {
@@ -13,6 +14,14 @@ public class AddZoneRequest {
 
     public void setMaster(User master) {
         this.master = master;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Zone getZone() {
