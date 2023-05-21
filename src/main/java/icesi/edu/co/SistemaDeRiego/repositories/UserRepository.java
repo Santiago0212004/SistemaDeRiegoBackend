@@ -15,4 +15,7 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.identification = :identification")
     User findByIdentification(@Param("identification") String identification);
 
+    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.authorization.value = :authorizationValue")
+    boolean existsByAuthorizationValue(@Param("authorizationValue") String authorizationValue);
+
 }

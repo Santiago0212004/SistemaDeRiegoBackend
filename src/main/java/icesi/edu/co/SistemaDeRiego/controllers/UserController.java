@@ -37,6 +37,11 @@ public class UserController {
 
                 boolean existsByUsername = userRepository.existsByUsername(user.getUsername());
                 boolean existsByIdentification = userRepository.existsByIdentification(user.getIdentification());
+                boolean usedAuthorization = userRepository.existsByAuthorizationValue(authInRepository.getValue());
+
+                if(usedAuthorization){
+                    return ResponseEntity.status(400).body("Access key already used.");
+                }
 
                 if (existsByUsername || existsByIdentification) {
                     return ResponseEntity.status(400).body("Username or identification already exists.");
