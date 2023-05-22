@@ -19,7 +19,8 @@ public class Zone {
 
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
+    @JsonIgnore
     private List<User> users;
 
     @OneToMany(mappedBy = "zone")

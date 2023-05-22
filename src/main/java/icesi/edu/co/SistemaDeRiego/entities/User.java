@@ -1,5 +1,6 @@
 package icesi.edu.co.SistemaDeRiego.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -26,12 +27,13 @@ public class User {
     private Authorization authorization;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "user_zone",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "zone_id")
     )
+    @JsonIgnore
     private List<Zone> zones;
 
     public User(){
