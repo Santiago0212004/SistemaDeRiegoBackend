@@ -23,9 +23,9 @@ public class ZoneController {
     @Autowired
     ZoneRepository zoneRepository;
 
-    @GetMapping(value = "zones/all", consumes = "application/json")
-    public ResponseEntity<?> getAllZones(@RequestBody User master) {
-        Optional<User> oMaster = userRepository.findById(master.getIdentification());
+    @GetMapping(value = "zones/all")
+    public ResponseEntity<?> getAllZones(@RequestHeader String identification) {
+        Optional<User> oMaster = userRepository.findById(identification);
 
         if (oMaster.isPresent()) {
             User masterInRepository = oMaster.get();
@@ -87,8 +87,8 @@ public class ZoneController {
     }
 
     @GetMapping("zones/users")
-    public ResponseEntity<?> getUsersByZone(@RequestBody Zone zone) {
-        Optional<Zone> oZone = zoneRepository.findById(zone.getId());
+    public ResponseEntity<?> getUsersByZone(@RequestHeader Long id) {
+        Optional<Zone> oZone = zoneRepository.findById(id);
 
 
         if (oZone.isPresent()) {

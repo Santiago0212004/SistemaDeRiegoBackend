@@ -31,9 +31,9 @@ public class UserController {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @GetMapping(value = "users/all", consumes = "application/json")
-    public ResponseEntity<?> getAllUsers(@RequestBody User master) {
-        Optional<User> oMaster = userRepository.findById(master.getIdentification());
+    @GetMapping(value = "users/all")
+    public ResponseEntity<?> getAllUsers(@RequestHeader String identification) {
+        Optional<User> oMaster = userRepository.findById(identification);
 
         if (oMaster.isPresent()) {
             User masterInRepository = oMaster.get();
@@ -125,15 +125,17 @@ public class UserController {
     }
 
     @GetMapping("users/zones")
-    public ResponseEntity<?> getZonesByUser(@RequestBody User user) {
-        Optional<User> oUser = userRepository.findById(user.getIdentification());
+    public ResponseEntity<?> getZonesByUser(@RequestHeader String identification) {
+        Optional<User> oUser = userRepository.findById(identification);
 
         if (oUser.isPresent()) {
             User userInRepository = oUser.get();
-            List<Zone> zones = userInRepository.getZones();
-            return ResponseEntity.status(200).body(zones);
+            if(userInRepository.getAuthorization().getType().equals("USER")){
+                List<Zone> zones = userInRepository.getZones();
+                return ResponseEntity.status(200).body(zones);
+            }
+            return ResponseEntity.status(401).body("Master user cannot have zones.");
         }
-
         return ResponseEntity.status(404).body("User not found.");
     }
 }

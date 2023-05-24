@@ -22,9 +22,9 @@ public class AuthorizationController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping(value = "authorizations/all", consumes = "application/json")
-    public ResponseEntity<?> getAllAuthorizations(@RequestBody User master) {
-        Optional<User> oMaster = userRepository.findById(master.getIdentification());
+    @GetMapping(value = "authorizations/all")
+    public ResponseEntity<?> getAllAuthorizations(@RequestHeader String identification) {
+        Optional<User> oMaster = userRepository.findById(identification);
 
         if (oMaster.isPresent()) {
             User masterInRepository = oMaster.get();
