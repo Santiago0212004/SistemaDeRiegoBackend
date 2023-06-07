@@ -151,7 +151,7 @@ public class UserController {
             if(userInRepository.getAuthorization().getType().equals("MASTER")){
                 return ResponseEntity.status(200).body(userRepository.findUsersNotLinkedToZone(zoneId));
             }
-            return ResponseEntity.status(401).body("Master user cannot have zones.");
+            return ResponseEntity.status(401).body("Not authorized.");
         }
         return ResponseEntity.status(404).body("User or zone not found.");
     }

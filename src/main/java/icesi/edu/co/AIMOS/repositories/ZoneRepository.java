@@ -11,6 +11,6 @@ public interface ZoneRepository extends CrudRepository<Zone, Long> {
     @Query("SELECT COUNT(z) > 0 FROM Zone z WHERE z.name = :name")
     boolean existsByName(@Param("name") String name);
 
-    @Query("SELECT z FROM Zone z INNER JOIN z.users u WHERE u.identification <> :userId")
+    @Query("SELECT z FROM Zone z WHERE z NOT IN (SELECT z FROM User u JOIN u.zones z WHERE u.identification = :userId)")
     List<Zone> findZonesNotLinkedToUser(@Param("userId") String userId);
 }

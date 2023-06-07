@@ -121,17 +121,16 @@ public class ZoneController {
     }
 
     @GetMapping("zones/notLinked")
-    public ResponseEntity<?> getUsersWithoutAZone(@RequestHeader String identification, @RequestHeader Long zoneId) {
-        Optional<User> oUser = userRepository.findById(identification);
-        Optional<Zone> oZone = zoneRepository.findById(zoneId);
+    public ResponseEntity<?> getUsersWithoutAZone(@RequestHeader String identification, @RequestHeader String userId) {
+        Optional<User> oMaster = userRepository.findById(identification);
+        Optional<User> oUser = userRepository.findById(userId);
 
-        if (oUser.isPresent() && oZone.isPresent()) {
-            User userInRepository = oUser.get();
-            Zone zoneInRepository = oZone.get();
-            if(userInRepository.getAuthorization().getType().equals("MASTER")){
-                return ResponseEntity.status(201).body(zoneRepository.findZonesNotLinkedToUser(identification));
+        if (oUser.isPresent() && oUser.isPresent()) {
+            User masterInRepository = oMaster.get();
+            if(masterInRepository.getAuthorization().getType().equals("MASTER")){
+                return ResponseEntity.status(201).body(zoneRepository.findZonesNotLinkedToUser(userId));
             }
-            return ResponseEntity.status(401).body("Master user cannot have zones.");
+            return ResponseEntity.status(401).body("Not authorized.");
         }
         return ResponseEntity.status(404).body("User or zone not found.");
     }

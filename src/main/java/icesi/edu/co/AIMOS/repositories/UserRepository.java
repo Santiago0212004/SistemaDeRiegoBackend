@@ -24,6 +24,6 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.authorization.type <> 'MASTER'")
     List<User> findAllNonMasterUsers();
 
-    @Query("SELECT u FROM User u INNER JOIN u.zones z WHERE z.id <> :zoneId AND u.authorization.type <> 'MASTER'")
+    @Query("SELECT u FROM User u WHERE u NOT IN (SELECT u FROM User u JOIN u.zones z WHERE z.id = :zoneId) AND u.authorization.type <> 'MASTER'")
     List<User> findUsersNotLinkedToZone(@Param("zoneId") Long zoneId);
 }
