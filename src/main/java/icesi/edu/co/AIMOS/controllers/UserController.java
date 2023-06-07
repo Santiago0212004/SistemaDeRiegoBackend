@@ -147,7 +147,6 @@ public class UserController {
 
         if (oUser.isPresent() && oZone.isPresent()) {
             User userInRepository = oUser.get();
-            Zone zoneInRepository = oZone.get();
             if(userInRepository.getAuthorization().getType().equals("MASTER")){
                 return ResponseEntity.status(200).body(userRepository.findUsersNotLinkedToZone(zoneId));
             }
