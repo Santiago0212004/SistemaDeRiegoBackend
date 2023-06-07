@@ -17,7 +17,7 @@ public class ActivationType {
     @Basic(optional = false)
     private String name;
 
-    @OneToMany(mappedBy = "activationType")
+    @OneToMany(mappedBy = "activationType", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Activation> activations;
 

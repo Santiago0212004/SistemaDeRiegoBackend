@@ -5,7 +5,7 @@ import icesi.edu.co.AIMOS.entities.User;
 import icesi.edu.co.AIMOS.entities.Zone;
 import icesi.edu.co.AIMOS.repositories.UserRepository;
 import icesi.edu.co.AIMOS.repositories.ZoneRepository;
-import icesi.edu.co.AIMOS.request.ZoneRequest;
+import icesi.edu.co.AIMOS.requests.ZoneRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +39,8 @@ public class ZoneController {
 
     @PostMapping(value = "zones/add", consumes = "application/json")
     public ResponseEntity<?> addZone(@RequestBody ZoneRequest zoneRequest) {
-        if(zoneRequest.getMaster().getIdentification()!=null && zoneRequest.getZone()!=null){
-            User master = zoneRequest.getMaster();
+        if(zoneRequest.getUser().getIdentification()!=null && zoneRequest.getZone()!=null){
+            User master = zoneRequest.getUser();
             Zone zone = zoneRequest.getZone();
 
             Optional<User> oMaster = userRepository.findById(master.getIdentification());
@@ -64,7 +64,7 @@ public class ZoneController {
     @DeleteMapping(value = "zones/delete")
     public ResponseEntity<?> deleteZone(@RequestBody ZoneRequest zoneRequest) {
 
-        Optional<User> oMaster = userRepository.findById(zoneRequest.getMaster().getIdentification());
+        Optional<User> oMaster = userRepository.findById(zoneRequest.getUser().getIdentification());
         Optional<Zone> oZone = zoneRepository.findById(zoneRequest.getZone().getId());
 
         if (oZone.isPresent()) {
@@ -86,7 +86,7 @@ public class ZoneController {
         return ResponseEntity.status(400).body("Zone not found.");
     }
 
-    @GetMapping("zones/users")
+    @GetMapping(value = "zones/users")
     public ResponseEntity<?> getUsersByZone(@RequestHeader Long id) {
         Optional<Zone> oZone = zoneRepository.findById(id);
 
@@ -98,6 +98,26 @@ public class ZoneController {
         }
 
         return ResponseEntity.status(404).body("Zone not found.");
+    }
+
+    @GetMapping(value = "zones/plants")
+    public ResponseEntity<?> getPlantsByZone(@RequestHeader Long zoneId, @RequestHeader String identification) {
+        Optional<Zone> oZone = zoneRepository.findById(zoneId);
+        Optional<User> oUser = userRepository.findById(identification);
+
+        if(oZone.isPresent() && oUser.isPresent()){
+            User userInRepository = oUser.get();
+            Zone zoneInRepository = oZone.get();
+
+            if(userInRepository.getAuthorization().getType().equals("USER")){
+                if(userInRepository.getZones().contains(zoneInRepository)){
+                    return ResponseEntity.status(200).body(zoneInRepository.getPlants());
+                }
+                return ResponseEntity.status(401).body("User is not associated with the zone");
+            }
+            return ResponseEntity.status(401).body("Not a valid user.");
+        }
+        return ResponseEntity.status(404).body("Zone or User not found.");
     }
 
 }

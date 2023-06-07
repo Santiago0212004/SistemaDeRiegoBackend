@@ -16,17 +16,20 @@ public class Plant {
     @Basic(optional = false)
     private String name;
 
+    @Basic(optional = false)
+    private Double humidityLimit;
+
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "zone_id")
+    @JoinColumn(name = "zone_id", nullable = false)
     private Zone zone;
 
-    @OneToMany(mappedBy = "plant")
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Actuator> actuators;
 
-    @OneToMany(mappedBy = "plant")
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Sensor> sensors;
 
@@ -76,5 +79,13 @@ public class Plant {
 
     public void setSensors(List<Sensor> sensors) {
         this.sensors = sensors;
+    }
+
+    public Double getHumidityLimit() {
+        return humidityLimit;
+    }
+
+    public void setHumidityLimit(Double humidityLimit) {
+        this.humidityLimit = humidityLimit;
     }
 }

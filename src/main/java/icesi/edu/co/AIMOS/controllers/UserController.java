@@ -7,7 +7,7 @@ import icesi.edu.co.AIMOS.entities.Zone;
 import icesi.edu.co.AIMOS.repositories.AuthorizationRepository;
 import icesi.edu.co.AIMOS.repositories.UserRepository;
 import icesi.edu.co.AIMOS.repositories.ZoneRepository;
-import icesi.edu.co.AIMOS.request.UserRequest;
+import icesi.edu.co.AIMOS.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,7 +38,7 @@ public class UserController {
         if (oMaster.isPresent()) {
             User masterInRepository = oMaster.get();
             if (masterInRepository.getAuthorization().getType().equals("MASTER")) {
-                return ResponseEntity.status(200).body(userRepository.findAll());
+                return ResponseEntity.status(200).body(userRepository.findAllNonMasterUsers());
             }
             return ResponseEntity.status(401).body("Not authorized to access all users.");
         }

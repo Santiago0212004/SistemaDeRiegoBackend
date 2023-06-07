@@ -19,7 +19,7 @@ public class SensorType {
     @Basic(optional = false)
     private String unit;
 
-    @OneToMany(mappedBy = "sensorType")
+    @OneToMany(mappedBy = "sensorType", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Sensor> sensors;
 

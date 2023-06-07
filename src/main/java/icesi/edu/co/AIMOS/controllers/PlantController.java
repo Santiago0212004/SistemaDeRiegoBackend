@@ -3,12 +3,10 @@ package icesi.edu.co.AIMOS.controllers;
 
 import icesi.edu.co.AIMOS.entities.*;
 import icesi.edu.co.AIMOS.repositories.*;
-import icesi.edu.co.AIMOS.request.PlantRequest;
+import icesi.edu.co.AIMOS.requests.PlantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -35,6 +33,7 @@ public class PlantController {
         User user = plantRequest.getUser();
         Zone zone = plantRequest.getZone();
         Plant plant = plantRequest.getPlant();
+        plant.setHumidityLimit((double) 0);
 
         Optional<User> oUser = userRepository.findById(user.getIdentification());
         Optional<Zone> oZone = zoneRepository.findById(zone.getId());
@@ -64,46 +63,84 @@ public class PlantController {
     @DeleteMapping(value = "plants/delete", consumes = "application/json")
     public ResponseEntity<?> delete(@RequestBody PlantRequest plantRequest) {
         Optional<User> oUser = userRepository.findById(plantRequest.getUser().getIdentification());
-        Optional<Zone> oZone = zoneRepository.findById(plantRequest.getZone().getId());
         Optional<Plant> oPlant = plantRepository.findById(plantRequest.getPlant().getId());
 
-        if (oUser.isPresent() && oZone.isPresent() && oPlant.isPresent()) {
+        if (oUser.isPresent() &&  oPlant.isPresent()) {
             User userInRepository = oUser.get();
-            Zone zoneInRepository = oZone.get();
             Plant plantInRepository = oPlant.get();
 
             if (userInRepository.getAuthorization().getType().equals("USER")) {
-                List<Zone> userZones = userInRepository.getZones();
-
-                if (userZones.contains(zoneInRepository)) {
-                    List<Plant> zonePlants = zoneInRepository.getPlants();
-
-                    if (zonePlants.contains(plantInRepository)) {
-                        zonePlants.remove(plantInRepository);
-                        zoneInRepository.setPlants(zonePlants);
-                        plantInRepository.setZone(null);
-                        zoneRepository.save(zoneInRepository);
-
-                        List<Sensor> plantSensors = plantInRepository.getSensors();
-                        plantInRepository.setSensors(null);
-                        sensorRepository.deleteAll(plantSensors);
-
-
-                        List<Actuator> plantActuators = plantInRepository.getActuators();
-                        plantInRepository.setActuators(null);
-                        actuatorRepository.deleteAll(plantActuators);
-
-                        plantRepository.delete(plantInRepository);
-
-                        return ResponseEntity.status(200).body("Plant successfully deleted.");
-                    }
-                    return ResponseEntity.status(400).body("Plant not associated with the zone.");
+                if (userInRepository.getZones().contains(plantInRepository.getZone())) {
+                    plantRepository.delete(plantInRepository);
+                    return ResponseEntity.status(200).body("Plant successfully deleted.");
                 }
                 return ResponseEntity.status(400).body("User not associated with the zone.");
             }
             return ResponseEntity.status(401).body("Only users can delete plants.");
         }
         return ResponseEntity.status(404).body("User, zone, or plant not found.");
+    }
+
+
+    @PutMapping(value = "plants/limit", consumes = "application/json")
+    public ResponseEntity<?> changePlantHumidityLimit(@RequestBody PlantRequest plantRequest, @RequestHeader Double humidityLimit){
+        Optional<User> oUser = userRepository.findById(plantRequest.getUser().getIdentification());
+        Optional<Plant> oPlant = plantRepository.findById(plantRequest.getPlant().getId());
+
+        if (oUser.isPresent() &&  oPlant.isPresent()) {
+            User userInRepository = oUser.get();
+            Plant plantInRepository = oPlant.get();
+            if (userInRepository.getAuthorization().getType().equals("USER")) {
+                if (userInRepository.getZones().contains(plantInRepository.getZone())) {
+                    plantInRepository.setHumidityLimit(humidityLimit);
+                    plantRepository.save(plantInRepository);
+                    return ResponseEntity.status(200).body("Plant humidity limit successfully changed.");
+                }
+                return ResponseEntity.status(400).body("User not associated with the zone.");
+            }
+            return ResponseEntity.status(401).body("Only users can delete plants.");
+        }
+        return ResponseEntity.status(404).body("User, zone, or plant not found.");
+    }
+
+    @GetMapping(value = "plants/actuators")
+    public ResponseEntity<?> getActuatorsByPlant(@RequestHeader Long plantId, @RequestHeader String identification) {
+        Optional<Plant> oPlant = plantRepository.findById(plantId);
+        Optional<User> oUser = userRepository.findById(identification);
+
+        if(oPlant.isPresent() && oUser.isPresent()){
+            User userInRepository = oUser.get();
+            Plant plantInRepository = oPlant.get();
+
+            if(userInRepository.getAuthorization().getType().equals("USER")){
+                if(userInRepository.getZones().contains(plantInRepository.getZone())){
+                    return ResponseEntity.status(200).body(plantInRepository.getActuators());
+                }
+                return ResponseEntity.status(401).body("User is not associated with the plant's zone.");
+            }
+            return ResponseEntity.status(401).body("Not a valid user.");
+        }
+        return ResponseEntity.status(404).body("Zone or User not found.");
+    }
+
+    @GetMapping(value = "plants/sensors")
+    public ResponseEntity<?> getSensorsByPlant(@RequestHeader Long plantId, @RequestHeader String identification) {
+        Optional<Plant> oPlant = plantRepository.findById(plantId);
+        Optional<User> oUser = userRepository.findById(identification);
+
+        if(oPlant.isPresent() && oUser.isPresent()){
+            User userInRepository = oUser.get();
+            Plant plantInRepository = oPlant.get();
+
+            if(userInRepository.getAuthorization().getType().equals("USER")){
+                if(userInRepository.getZones().contains(plantInRepository.getZone())){
+                    return ResponseEntity.status(200).body(plantInRepository.getSensors());
+                }
+                return ResponseEntity.status(401).body("User is not associated with the plant's zone.");
+            }
+            return ResponseEntity.status(401).body("Not a valid user.");
+        }
+        return ResponseEntity.status(404).body("Zone or User not found.");
     }
 
 }

@@ -19,7 +19,7 @@ public class Measure {
     private Double value;
 
     @ManyToOne
-    @JoinColumn(name = "sensor_id")
+    @JoinColumn(name = "sensor_id", nullable = false)
     private Sensor sensor;
 
     public Long getId() {

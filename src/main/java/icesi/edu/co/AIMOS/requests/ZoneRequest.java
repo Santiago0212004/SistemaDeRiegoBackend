@@ -1,19 +1,19 @@
-package icesi.edu.co.AIMOS.request;
+package icesi.edu.co.AIMOS.requests;
 
 
 import icesi.edu.co.AIMOS.entities.User;
 import icesi.edu.co.AIMOS.entities.Zone;
 
 public class ZoneRequest {
-    private User master;
+    private User user;
     private Zone zone;
 
-    public User getMaster() {
-        return master;
+    public User getUser() {
+        return user;
     }
 
-    public void setMaster(User master) {
-        this.master = master;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Zone getZone() {

@@ -5,7 +5,7 @@ import icesi.edu.co.AIMOS.entities.User;
 import icesi.edu.co.AIMOS.entities.Zone;
 import icesi.edu.co.AIMOS.repositories.UserRepository;
 import icesi.edu.co.AIMOS.repositories.ZoneRepository;
-import icesi.edu.co.AIMOS.request.LinkUserZoneRequest;
+import icesi.edu.co.AIMOS.requests.LinkUserZoneRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

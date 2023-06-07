@@ -1,13 +1,11 @@
-package icesi.edu.co.AIMOS.request;
+package icesi.edu.co.AIMOS.requests;
 
 
 import icesi.edu.co.AIMOS.entities.User;
-import icesi.edu.co.AIMOS.entities.Zone;
 
-public class LinkUserZoneRequest {
+public class UserRequest {
     private User master;
     private User user;
-    private Zone zone;
 
     public User getMaster() {
         return master;
@@ -23,13 +21,5 @@ public class LinkUserZoneRequest {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Zone getZone() {
-        return zone;
-    }
-
-    public void setZone(Zone zone) {
-        this.zone = zone;
     }
 }

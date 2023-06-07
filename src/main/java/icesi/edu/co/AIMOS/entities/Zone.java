@@ -23,7 +23,7 @@ public class Zone {
     @JsonIgnore
     private List<User> users;
 
-    @OneToMany(mappedBy = "zone")
+    @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Plant> plants;
 

@@ -1,4 +1,4 @@
-package icesi.edu.co.AIMOS.request;
+package icesi.edu.co.AIMOS.requests;
 
 import icesi.edu.co.AIMOS.entities.Plant;
 import icesi.edu.co.AIMOS.entities.User;

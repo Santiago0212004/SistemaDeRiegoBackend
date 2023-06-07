@@ -4,7 +4,7 @@ import icesi.edu.co.AIMOS.entities.Authorization;
 import icesi.edu.co.AIMOS.entities.User;
 import icesi.edu.co.AIMOS.repositories.AuthorizationRepository;
 import icesi.edu.co.AIMOS.repositories.UserRepository;
-import icesi.edu.co.AIMOS.request.AuthorizationRequest;
+import icesi.edu.co.AIMOS.requests.AuthorizationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +39,7 @@ public class AuthorizationController {
 
     @PostMapping(value = "authorizations/add", consumes = "application/json")
     public ResponseEntity<?> addAuthorization(@RequestBody AuthorizationRequest authorizationRequest) {
-        User master = authorizationRequest.getMaster();
+        User master = authorizationRequest.getUser();
         Optional<User> oMaster = userRepository.findById(master.getIdentification());
 
         Authorization authorization = authorizationRequest.getAuthorization();
@@ -63,7 +63,7 @@ public class AuthorizationController {
 
     @DeleteMapping(value = "authorizations/delete", consumes = "application/json")
     public ResponseEntity<?> deleteAuthorization(@RequestBody AuthorizationRequest authorizationRequest) {
-        User master = authorizationRequest.getMaster();
+        User master = authorizationRequest.getUser();
         Authorization authorization = authorizationRequest.getAuthorization();
         Optional<User> oMaster = userRepository.findById(master.getIdentification());
         Optional<Authorization> oAuthorization = authorizationRepository.findById(authorization.getValue());

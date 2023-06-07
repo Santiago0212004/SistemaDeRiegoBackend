@@ -16,7 +16,7 @@ public class ActuatorType {
     @Basic(optional = false)
     private String model;
 
-    @OneToMany(mappedBy = "actuatorType")
+    @OneToMany(mappedBy = "actuatorType", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Actuator> actuators;
 

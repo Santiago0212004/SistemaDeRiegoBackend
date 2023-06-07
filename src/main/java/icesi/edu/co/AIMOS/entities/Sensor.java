@@ -16,14 +16,14 @@ public class Sensor {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "plant_id")
+    @JoinColumn(name = "plant_id", nullable = false)
     private Plant plant;
 
     @ManyToOne
-    @JoinColumn(name = "sensor_type_id")
+    @JoinColumn(name = "sensor_type_id", nullable = false)
     private SensorType sensorType;
 
-    @OneToMany(mappedBy = "sensor")
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Measure> measures;
 

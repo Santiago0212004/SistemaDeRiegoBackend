@@ -16,11 +16,11 @@ public class Activation {
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name = "actuator_id")
+    @JoinColumn(name = "actuator_id", nullable = false)
     private Actuator actuator;
 
     @ManyToOne
-    @JoinColumn(name = "activation_type_id")
+    @JoinColumn(name = "activation_type_id", nullable = false)
     private ActivationType activationType;
 
     public Long getId() {

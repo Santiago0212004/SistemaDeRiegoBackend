@@ -17,14 +17,14 @@ public class Actuator {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "plant_id")
+    @JoinColumn(name = "plant_id", nullable = false)
     private Plant plant;
 
     @ManyToOne
-    @JoinColumn(name = "actuator_type_id")
+    @JoinColumn(name = "actuator_type_id", nullable = false)
     private ActuatorType actuatorType;
 
-    @OneToMany(mappedBy = "actuator")
+    @OneToMany(mappedBy = "actuator", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Activation> activations;
 
