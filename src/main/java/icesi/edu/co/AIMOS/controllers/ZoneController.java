@@ -120,4 +120,20 @@ public class ZoneController {
         return ResponseEntity.status(404).body("Zone or User not found.");
     }
 
+    @GetMapping("zones/notLinked")
+    public ResponseEntity<?> getUsersWithoutAZone(@RequestHeader String identification, @RequestHeader Long zoneId) {
+        Optional<User> oUser = userRepository.findById(identification);
+        Optional<Zone> oZone = zoneRepository.findById(zoneId);
+
+        if (oUser.isPresent() && oZone.isPresent()) {
+            User userInRepository = oUser.get();
+            Zone zoneInRepository = oZone.get();
+            if(userInRepository.getAuthorization().getType().equals("MASTER")){
+                return ResponseEntity.status(201).body(zoneRepository.findZonesNotLinkedToUser(identification));
+            }
+            return ResponseEntity.status(401).body("Master user cannot have zones.");
+        }
+        return ResponseEntity.status(404).body("User or zone not found.");
+    }
+
 }

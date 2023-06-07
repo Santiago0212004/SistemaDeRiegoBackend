@@ -1,6 +1,7 @@
 package icesi.edu.co.AIMOS.repositories;
 
 import icesi.edu.co.AIMOS.entities.User;
+import icesi.edu.co.AIMOS.entities.Zone;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,7 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     @Query("SELECT u FROM User u WHERE u.authorization.type <> 'MASTER'")
     List<User> findAllNonMasterUsers();
+
+    @Query("SELECT u FROM User u INNER JOIN u.zones z WHERE z.id <> :zoneId")
+    List<User> findUsersNotLinkedToZone(@Param("zoneId") Long zoneId);
 }
