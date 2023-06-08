@@ -29,7 +29,7 @@ public class AuthorizationController {
         if (oMaster.isPresent()) {
             User masterInRepository = oMaster.get();
             if (masterInRepository.getAuthorization().getType().equals("MASTER")) {
-                return ResponseEntity.status(200).body(authorizationRepository.findAll());
+                return ResponseEntity.status(200).body(authorizationRepository.findAllNonMasterAuthorizations());
             }
             return ResponseEntity.status(400).body("Not authorized");
         }
