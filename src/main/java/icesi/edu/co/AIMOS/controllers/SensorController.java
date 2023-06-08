@@ -6,7 +6,7 @@ import icesi.edu.co.AIMOS.requests.SensorRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,6 +26,8 @@ public class SensorController {
 
     @Autowired
     SensorTypeRepository sensorTypeRepository;
+
+
 
 
     @PostMapping(value = "sensors/add", consumes = "application/json")
@@ -102,4 +104,31 @@ public class SensorController {
 
         return ResponseEntity.status(404).body("User or Actuator not found.");
     }
+
+    @GetMapping("sensors/last")
+    public ResponseEntity<?> getLastMeasure(@RequestHeader String identification, @RequestHeader Long sensorId) {
+        Optional<User> oUser = userRepository.findById(identification);
+        Optional<Sensor> oSensor = sensorRepository.findById(sensorId);
+
+        if (oUser.isPresent() && oSensor.isPresent()) {
+            User userInRepository = oUser.get();
+            Sensor sensorInRepository = oSensor.get();
+
+            if (userInRepository.getAuthorization().getType().equals("USER")) {
+                if (userInRepository.getZones().contains(sensorInRepository.getPlant().getZone())) {
+                    List<Measure> measures = sensorInRepository.getMeasures();
+                    if (!measures.isEmpty()) {
+                        Measure lastMeasure = measures.get(measures.size() - 1);
+                        return ResponseEntity.status(200).body(lastMeasure);
+                    }
+                    return ResponseEntity.status(404).body("No measures found for this sensor.");
+                }
+                return ResponseEntity.status(401).body("User is not associated with the zone where this plant is present.");
+            }
+            return ResponseEntity.status(401).body("User is not of type 'USER'.");
+        }
+        return ResponseEntity.status(404).body("User or Actuator not found.");
+    }
+
+
 }
