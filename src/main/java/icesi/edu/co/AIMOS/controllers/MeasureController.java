@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -26,30 +27,41 @@ public class MeasureController {
     @Autowired
     ActuatorRepository actuatorRepository;
 
+    @Autowired
+    SensorRepository sensorRepository;
+
 
     @PostMapping(value = "measures/add",consumes = "application/json")
     public ResponseEntity<?> addMeasure(@RequestBody Measure measure){
         measure.setDate(new Date());
-        measureRepository.save(measure);
 
-        if(measure.getSensor().getSensorType().getModel().equals("Humidity")){
-            if(measure.getValue() <= measure.getSensor().getPlant().getHumidityLimit()){
+        Optional<Sensor> oSensor = sensorRepository.findById(measure.getSensor().getId());
 
-                ActivationType activationType = activationTypeRepository.findById(1L).get();
-                Actuator actuator = measure.getSensor().getPlant().getActuators().get(0);
+        if(oSensor.isPresent()){
+            Sensor sensorInRepository = oSensor.get();
+            measure.setSensor(sensorInRepository);
+            measureRepository.save(measure);
+            if(measure.getSensor().getSensorType().getModel().equals("Soil moisture")){
+                if(measure.getValue() <= measure.getSensor().getPlant().getHumidityLimit()){
 
-                Activation activation = new Activation();
-                activation.setActivationType(activationType);
-                activation.setDate(new Date());
-                activation.setActuator(actuator);
+                    ActivationType activationType = activationTypeRepository.findById(1L).get();
+                    Actuator actuator = measure.getSensor().getPlant().getActuators().get(0);
 
-                activationRepository.save(activation);
+                    Activation activation = new Activation();
+                    activation.setActivationType(activationType);
+                    activation.setDate(new Date());
+                    activation.setActuator(actuator);
 
-                return ResponseEntity.status(201).body("Activate");
+                    activationRepository.save(activation);
+
+                    return ResponseEntity.status(201).body("Activate");
+                }
+                return ResponseEntity.status(200).body("Received");
             }
+            return ResponseEntity.status(200).body("Received");
         }
 
-        return ResponseEntity.status(200).body("Received");
+        return ResponseEntity.status(400).body("Sensor does not exist");
     }
 
 }

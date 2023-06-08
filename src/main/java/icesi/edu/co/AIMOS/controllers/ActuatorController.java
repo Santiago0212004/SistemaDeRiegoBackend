@@ -104,7 +104,6 @@ public class ActuatorController {
 
             return ResponseEntity.status(401).body("User is not of type 'USER'.");
         }
-
         return ResponseEntity.status(404).body("User or Actuator not found.");
     }
 }
