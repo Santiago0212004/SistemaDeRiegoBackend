@@ -27,38 +27,45 @@ public class MeasureController {
     @Autowired
     SensorRepository sensorRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
 
     @PostMapping(value = "measures/add",consumes = "application/json")
-    public ResponseEntity<?> addMeasure(@RequestBody Measure measure){
+    public ResponseEntity<?> addMeasure(@RequestBody Measure measure, @RequestHeader String identification){
         measure.setDate(new Date());
 
         Optional<Sensor> oSensor = sensorRepository.findById(measure.getSensor().getId());
-
-        if(oSensor.isPresent()){
+        Optional<User> oUser = userRepository.findById(identification);
+        if(oSensor.isPresent() && oUser.isPresent()){
             Sensor sensorInRepository = oSensor.get();
-            measure.setSensor(sensorInRepository);
-            measureRepository.save(measure);
-            if(measure.getSensor().getSensorType().getModel().equals("Soil moisture")){
-                if(measure.getValue() <= measure.getSensor().getPlant().getHumidityLimit()){
+            User userInRepository = oUser.get();
+            if(sensorInRepository.getPlant().getZone().getUsers().contains(userInRepository)){
+                measure.setSensor(sensorInRepository);
+                measureRepository.save(measure);
+                if(measure.getSensor().getSensorType().getModel().equals("Soil moisture")){
+                    if(measure.getValue() <= measure.getSensor().getPlant().getHumidityLimit()){
 
-                    ActivationType activationType = activationTypeRepository.findById(1L).get();
-                    Actuator actuator = measure.getSensor().getPlant().getActuators().get(0);
+                        ActivationType activationType = activationTypeRepository.findById(1L).get();
+                        Actuator actuator = measure.getSensor().getPlant().getActuators().get(0);
 
-                    Activation activation = new Activation();
-                    activation.setActivationType(activationType);
-                    activation.setDate(new Date());
-                    activation.setActuator(actuator);
+                        Activation activation = new Activation();
+                        activation.setActivationType(activationType);
+                        activation.setDate(new Date());
+                        activation.setActuator(actuator);
 
-                    activationRepository.save(activation);
+                        activationRepository.save(activation);
 
-                    return ResponseEntity.status(201).body("Activate");
+                        return ResponseEntity.status(201).body("Activate");
+                    }
+                    return ResponseEntity.status(200).body("Received");
                 }
                 return ResponseEntity.status(200).body("Received");
             }
-            return ResponseEntity.status(200).body("Received");
+            return ResponseEntity.status(401).body("User is not associated with the zone of this sensor.");
         }
 
-        return ResponseEntity.status(400).body("Sensor does not exist");
+        return ResponseEntity.status(404).body("Sensor or user does not exist");
     }
 
 
